@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Data
+# We don't commit data files to avoid bloating the repo and potential data safety issues
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Models and outputs
+*.pkl
+*.model
+*.joblib
+*.h5
+*.hdf5
+
+# Credentials and secrets
+*.pem
+*.key
+.env
+secret/
