@@ -8,6 +8,7 @@
 [![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![UCI Dataset](https://img.shields.io/badge/Dataset-UCI_Bank_Marketing-00897B?style=for-the-badge&logo=databricks&logoColor=white)](https://archive.ics.uci.edu/dataset/222/bank-marketing)
 [![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)](#)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 *An end-to-end Machine Learning project predicting customer subscription to term deposits from historical bank marketing campaign data.*
 
