@@ -140,6 +140,64 @@ print(f'Saved {len(df):,} rows.')
 
 **Random seed:** 42 used throughout for reproducibility.
 
+## Production Architecture — the `src/` Module
+
+While the analysis and results live in the Jupyter Notebooks, the project also includes a fully modular `src/` package that
+refactors the notebook logic into production-ready Python code. This separation follows standard **Software Engineering for ML** practice — notebooks are for exploration and communication; `src/` is for repeatable, testable deployment.
+
+```
+src/
+├── data/
+│   └── load_data.py          # load_raw_data(), describe_dataset()
+├── preprocessing/
+│   └── clean_data.py         # basic_cleaning(), drop_leakage_features(), encode_target()
+├── features/
+│   └── build_features.py     # make_features(), add_was_previously_contacted(),
+│                             # add_age_group(), add_campaign_capped()
+├── models/
+│   ├── train.py              # build_pipeline(), train(), load_pipeline()
+│   └── predict.py            # predict(), predict_proba(), score_customers()
+└── evaluation/
+    └── metrics.py            # compute_metrics(), plot_roc_curve(),
+                              # plot_pr_curve(), threshold_analysis()
+```
+
+A complete end-to-end scoring run using the `src/` modules looks like this:
+
+```python
+from src.data.load_data import load_raw_data
+from src.preprocessing.clean_data import basic_cleaning
+from src.features.build_features import make_features
+from src.models.train import train
+from src.models.predict import score_customers
+from sklearn.model_selection import train_test_split
+
+# 1. Load
+df = load_raw_data()
+
+# 2. Clean  (drops 'duration' leakage feature, encodes target)
+df = basic_cleaning(df)
+
+# 3. Feature engineering  (was_previously_contacted, age_group, campaign_capped)
+df = make_features(df)
+
+# 4. Split
+X, y = df.drop(columns=['y']), df['y']
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.15, random_state=42, stratify=y
+)
+
+# 5. Train and save the pipeline
+pipeline = train(X_train, y_train)  # saved to models/gradient_boosting_pipeline.pkl
+
+# 6. Score new customers  (sorted by predicted subscription probability)
+priority_list = score_customers(X_test, pipeline, threshold=0.30)
+print(priority_list.head(10))
+```
+
+The `score_customers()` function returns a DataFrame sorted by `subscription_probability`,
+with a human-readable `priority` column (`High` / `Low`), ready to hand off to a campaign manager or export to a CRM system.
+
 ## AI Usage
 
 This project was developed using **Antigravity** as an AI coding assistant. AI assistance was used for:

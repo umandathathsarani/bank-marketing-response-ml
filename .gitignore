@@ -34,6 +34,7 @@ data/processed/*
 !data/processed/.gitkeep
 
 # Models and outputs
+models/
 *.pkl
 *.model
 *.joblib
