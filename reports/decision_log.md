@@ -70,3 +70,32 @@
 **Trade-offs:** Adds complexity; all features are non-leaky and reproducible.  
 **Date:** 2026-09-20
 
+---
+
+## Decision: Class Imbalance Strategy
+**Options Considered:** SMOTE oversampling, `class_weight='balanced'`, threshold tuning only  
+**Selected Option:** `class_weight='balanced'` on all applicable models  
+**Reason:** Dataset is large enough (45k rows) that resampling is not necessary. Class weights adjust the loss function without changing the data distribution, reducing overfitting risk. SMOTE adds synthetic samples which can introduce noise.  
+**Evidence:** Applied in `04_model_training.ipynb`.  
+**Trade-offs:** Gradient Boosting does not natively support class_weight — compensated via threshold tuning in notebook 05.  
+**Date:** 2026-09-20
+
+---
+
+## Decision: Model Comparison & Candidate Selection
+**Options Considered:** DummyClassifier, Logistic Regression, Decision Tree, Random Forest, Gradient Boosting  
+**Selected Option:** **Random Forest** as primary candidate; **Gradient Boosting** as secondary candidate for threshold analysis  
+**Reason:** Random Forest achieves the best F1 and Recall balance at default threshold. Gradient Boosting has highest ROC-AUC/PR-AUC and benefits significantly from threshold tuning.
+
+**Actual validation-set results (from `04_model_training.ipynb`):**
+
+| Model | Accuracy | Precision | Recall | F1 | ROC-AUC | PR-AUC |
+|-------|----------|-----------|--------|----|---------|--------|
+| DummyClassifier (baseline) | 0.7933 | 0.1062 | 0.1033 | 0.1047 | 0.4940 | 0.1160 |
+| Logistic Regression | 0.7681 | 0.2811 | 0.6297 | 0.3887 | 0.7785 | 0.4238 |
+| Decision Tree | 0.8238 | 0.3430 | 0.5516 | 0.4230 | 0.7441 | 0.3531 |
+| Random Forest | 0.8083 | 0.3297 | **0.6171** | **0.4298** | 0.7940 | 0.4532 |
+| Gradient Boosting | 0.8944 | **0.6345** | 0.2317 | 0.3395 | **0.8074** | **0.4689** |
+
+**Trade-offs:** Logistic Regression has highest Recall but lowest Precision. Gradient Boosting has excellent discriminative power (ROC-AUC 0.807) but needs threshold tuning to improve Recall.  
+**Date:** 2026-09-20
